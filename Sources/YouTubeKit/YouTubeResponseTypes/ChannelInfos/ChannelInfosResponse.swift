@@ -236,14 +236,23 @@ public struct ChannelInfosResponse: YouTubeResponse {
     /// }
     /// ```
     public func getChannelContent(type: RequestTypes, youtubeModel: YouTubeModel, useCookies: Bool? = nil, result: @escaping (ChannelInfosResponse?, Error?) -> ()) {
-        guard
-            let params = requestParams[type]
-        else { result(nil, "Something between returnType or params haven't been added where it should, returnType in ChannelInfosResponse.requestTypes and params in ChannelInfosResponse.requestParams"); return }
+        
         guard let channelId = self.channelId else { result(nil, "Channel ID is nil"); return}
         
-        ChannelInfosResponse.sendRequest(youtubeModel: youtubeModel, data: [.browseId: channelId, .params: params], useCookies: useCookies, result: { channelResponse, error in
-            result(channelResponse, error)
-        })
+        switch type {
+        case .directs, .playlists, .shorts, .videos:
+            guard
+                let params = requestParams[type]
+            else { result(nil, "Something between returnType or params haven't been added where it should, returnType in ChannelInfosResponse.requestTypes and params in ChannelInfosResponse.requestParams"); return }
+            
+            ChannelInfosResponse.sendRequest(youtubeModel: youtubeModel, data: [.browseId: channelId, .params: params], useCookies: useCookies, result: { channelResponse, error in
+                result(channelResponse, error)
+            })
+        case .custom(let params):
+            ChannelInfosResponse.sendRequest(youtubeModel: youtubeModel, data: [.browseId: channelId, .params: params], useCookies: useCookies, result: { channelResponse, error in
+                result(channelResponse, error)
+            })
+        }
     }
     
     /// Get a content from a channel, the content represents one of the tabs you see when browsing on YouTube's website in a channel's webpage. For example: Home, Videos, Shorts, Playlists etc...
