@@ -224,8 +224,9 @@ public struct VideoInfosWithDownloadFormatsResponse: YouTubeResponse {
         var nParameterFunction: String? = nil
         
         for line in separatedByLinePlayer {
-            if line.contains("a=a.split(\"\");") {
-                guard let instructionsString = line.ytkFirstGroupMatch(for: "=function\\(a\\)\\{a=a.split\\(\"\"\\);([\\s\\S]*?)return") else { throw ResponseError(step: .scrapPlayer, reason: "Could not get n-parameter instructions.") }
+            if line.contains("a=a.split(\",\");") {
+//                guard let instructionsString = line.ytkFirstGroupMatch(for: #"=function\(.*\)\{.*a=.*\.split\(.*\);"#) else { throw ResponseError(step: .scrapPlayer, reason: "Could not get n-parameter instructions.") }
+                let instructionsString = line
                 
                 let instructionsStringArray = instructionsString.split(separator: ";").map { String($0) } // not using components(...), so we don't have an empty item at the end of the array
                 

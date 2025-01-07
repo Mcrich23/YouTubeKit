@@ -1769,12 +1769,6 @@ public class YouTubeModel {
     }
 }
 
-#if swift(>=6.0)
 extension String: @retroactive LocalizedError {
     public var errorDescription: String? { self }
 }
-#else
-extension String: LocalizedError {
-    public var errorDescription: String? { self }
-}
-#endif
